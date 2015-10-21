@@ -31,3 +31,6 @@ GO
 
 INSERT INTO [dbo].[VolunteerTracking] (user_id,beneficiary_id,is_active) values (1,1,1),(1,2,0),(1,3,1),(1,4,1),(2,1,1),(2,5,1),(3,6,1),(3,7,1),(4,8,1),(4,8,1)
 GO
+
+update ProjectLocation set changed_by = 1,changed_date =GETDATE(),created_date=GETDATE();
+GO
