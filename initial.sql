@@ -25,8 +25,9 @@ CREATE TABLE [dbo].[Users](
 	[user_name] [nvarchar](50) NULL,
 	[user_email] [nvarchar] (100) NULL,
 	[role_id] [int] NULL,
-	[password] [char] (128),
 	[created_date] [datetime] NULL,
+	[changed_date] [datetime] NULL,
+	[changed_by] [nvarchar](50) NULL,
     [is_active] [bit] NULL,
 UNIQUE NONCLUSTERED 
 (
@@ -46,7 +47,7 @@ CREATE TABLE [dbo].[Locations](
 	[location_name] [nvarchar](50) NOT NULL,
 	[created_date] [datetime] NULL,
 	[changed_date] [datetime] NULL,
-	[changed_by] [int] NULL,
+	[changed_by] [nvarchar](50) NULL,
 	[is_active] [bit] NULL,
 UNIQUE NONCLUSTERED 
 (
@@ -64,7 +65,7 @@ CREATE TABLE [dbo].[Project](
 	[project_lead_id] [int] NULL,
 	[created_date] [datetime] NULL,
 	[changed_date] [datetime] NULL,
-	[changed_by] [int] NULL,
+	[changed_by] [nvarchar](50) NULL,
 UNIQUE NONCLUSTERED 
 (
 	[project_id] ASC
@@ -77,9 +78,6 @@ ALTER TABLE [dbo].[Project]  WITH CHECK ADD CONSTRAINT [Fk_lead_id1]  FOREIGN KE
 REFERENCES [dbo].[Users] ([user_id])
 GO
 
-ALTER TABLE [dbo].[Project]  WITH CHECK ADD CONSTRAINT [Fk_changed_by1]  FOREIGN KEY([changed_by])
-REFERENCES [dbo].[Users] ([user_id])
-GO
 /****** Create [dbo].[ProjectLocation] ******/
 CREATE TABLE [dbo].[ProjectLocation](
 	[project_location_id] [int] IDENTITY(1,1) NOT NULL,
@@ -88,7 +86,7 @@ CREATE TABLE [dbo].[ProjectLocation](
 	[is_active] [bit] NULL,
 	[created_date] [datetime] NULL,
 	[changed_date] [datetime] NULL,
-	[changed_by] [int] NULL,
+	[changed_by] [nvarchar](50) NULL,
 UNIQUE NONCLUSTERED 
 (
 	[project_location_id] ASC
@@ -114,7 +112,7 @@ CREATE TABLE [dbo].[Beneficiary](
 	[contact_id] [int] NULL,
 	[created_date] [datetime] NULL,
 	[changed_date] [datetime] NULL,
-	[changed_by] [int] NULL,
+	[changed_by] [nvarchar](50) NULL,
 	[is_active] [bit] NULL,
 UNIQUE NONCLUSTERED 
 (
@@ -132,10 +130,6 @@ ALTER TABLE [dbo].[Beneficiary]  WITH CHECK ADD CONSTRAINT [Fk_contact_id3]  FOR
 REFERENCES [dbo].[Users] ([user_id])
 GO
 
-ALTER TABLE [dbo].[Beneficiary]  WITH CHECK ADD CONSTRAINT [Fk_changed_id3]  FOREIGN KEY([changed_by])
-REFERENCES [dbo].[Users] ([user_id])
-GO
-
 /****** Create [dbo].[Funds] ******/
 CREATE TABLE [dbo].[Funds](
 	[fund_id] [int] IDENTITY(1,1) NOT NULL,
@@ -143,17 +137,13 @@ CREATE TABLE [dbo].[Funds](
 	[fund_amount] [float] NOT NULL,
 	[received_date] [datetime] NULL,
 	[changed_date] [datetime] NULL,
-	[changed_by] [int] NULL,	
+	[changed_by] [nvarchar](50) NULL,
 UNIQUE NONCLUSTERED 
 (
 	[fund_id] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 
-GO
-
-ALTER TABLE [dbo].[Funds]  WITH CHECK ADD CONSTRAINT [Fk_changed_by4]  FOREIGN KEY([changed_by])
-REFERENCES [dbo].[Users] ([user_id])
 GO
 
 /****** Create [dbo].[FundAllocation] ******/
@@ -163,23 +153,15 @@ CREATE TABLE [dbo].[FundAllocation](
 	[beneficiary_id] [int] NOT NULL,
 	[allocated_date] [datetime] NULL,
 	[allocated_amount] [float] NOT NULL,
-	[allocated_by] [int] NOT NULL,
+	[allocated_by] [nvarchar] (50) NOT NULL,
 	[changed_date] [datetime] NULL,
-	[changed_by] [int] NULL,
+	[changed_by] [nvarchar](50) NULL,
 UNIQUE NONCLUSTERED 
 (
 	[allocation_id] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 
-GO
-
-ALTER TABLE [dbo].[FundAllocation]  WITH CHECK ADD CONSTRAINT [Fk_changed_by5]  FOREIGN KEY([changed_by])
-REFERENCES [dbo].[Users] ([user_id])
-GO
-
-ALTER TABLE [dbo].[FundAllocation]  WITH CHECK ADD CONSTRAINT [Fk_allocated_by5]  FOREIGN KEY([allocated_by])
-REFERENCES [dbo].[Users] ([user_id])
 GO
 
 ALTER TABLE [dbo].[FundAllocation]  WITH CHECK ADD CONSTRAINT [Fk_fund_id5]  FOREIGN KEY([fund_id])
@@ -198,6 +180,7 @@ CREATE TABLE [dbo].[VolunteerTracking](
 	[start_date] [datetime] NULL,
 	[end_date] [datetime] NULL,
 	[is_active] [bit] NULL,
+	[changed_by] [nvarchar] (50) NULL
 UNIQUE NONCLUSTERED 
 (
 	[tracking_id] ASC
